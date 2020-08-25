@@ -4,4 +4,4 @@
 
 Unity version: 2019.4.8f1
 
-Made on Mac OS X
+Made on MacOS
