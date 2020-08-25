@@ -54,8 +54,10 @@ public class WeightComponent : InventoryComponent
 }
 #endregion
 
-public abstract class Inventory
+public class Inventory
 {
+    public const int MaxItemsInStack = 10;
+    
     #region Components
     private List<InventoryComponent> components = new List<InventoryComponent>();
     public IEnumerable<InventoryComponent> Components => this.Parent == null ? this.components : this.components.Concat(this.Parent.Components);
@@ -72,11 +74,6 @@ public abstract class Inventory
 
     public Inventory Parent { get; private set; }
 
-    public Inventory(int numStacks)
-    {
-        this.AddStacks(numStacks);
-    }
-    
     public void AddStacks(int numStacks)
     {
         for (var i = 0; i < numStacks; i++) this.stacks.Add(new ItemStack());
@@ -86,8 +83,38 @@ public abstract class Inventory
     {
         if (sourceStack.Item == null) return false;
         var quantity = quantityOverride > 0 && sourceStack.Quantity >= quantityOverride ? quantityOverride : sourceStack.Quantity;
-
+        
         return true;
+    }
+
+    public int TryPutItem(Item item)
+    {
+        // At first, let's find a stack with same item type and it's not full
+        var stack = this.Stacks.FirstOrDefault(x => x.Item != null && x.Item.Name == item.Name && x.Quantity < MaxItemsInStack);
+        if (stack == null)
+        {
+            // If there's no way to stack, find an empty space
+            stack = this.Stacks.FirstOrDefault(x => x.Item == null);
+            if (stack == null) return -1;
+            stack.Item = item;
+            stack.Quantity++;
+            return IndexOfStack(stack);
+        }
+        stack.Quantity++;
+        return IndexOfStack(stack);
+    }
+
+    public int TryTakeItem(int stackIndex)
+    {
+        var stack = GetStack(stackIndex);
+        if (stack?.Quantity > 0)
+        {
+            stack.Quantity--;
+            if (stack.Quantity == 0) stack.Item = null;
+            return stack.Quantity;
+        }
+
+        return -1;
     }
     
     protected ItemStack GetStack(int index)           => index >= 0 && index < this.Size ? this.stacks[index] : null;
