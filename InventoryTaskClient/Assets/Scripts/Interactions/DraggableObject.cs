@@ -8,6 +8,8 @@ public class DraggableObject : InteractableObject
     private Vector3 screenPoint = Vector3.zero;
     private Vector3 offset;
 
+    private Vector3 originalPosition;
+
     private bool isDragging;
     protected bool IsDragging
     {
@@ -30,6 +32,7 @@ public class DraggableObject : InteractableObject
         {
             offset           = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
             IsDragging       = true;
+            originalPosition = transform.position;
             var clientItem   = GetComponent<ClientItem>();
             if (clientItem != null) InteractionManager.Obj.TrySelectingItem(clientItem);
         }
@@ -50,5 +53,10 @@ public class DraggableObject : InteractableObject
     {
         if (IsDragging) IsDragging = false;
         return InteractResult.Success;
+    }
+
+    public void ResetPosition()
+    {
+        transform.position = originalPosition;
     }
 }

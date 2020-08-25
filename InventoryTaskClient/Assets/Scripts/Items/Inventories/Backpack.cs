@@ -49,7 +49,11 @@ public class Backpack : InteractableSprite
         {
             // Put an item into inventory
             var slotIndex = inventory.Inventory.TryPutItem(carriedItem.Item);
-            if (slotIndex == -1) return;
+            if (slotIndex == -1)
+            {
+                carriedItem.GetComponent<DraggableObject>().ResetPosition();
+                return;
+            }
             // Save item data in inventory item inside a slot
             if (slotObjects.Count > slotIndex && slotObjects[slotIndex].slot.transform.childCount == 0)
             {

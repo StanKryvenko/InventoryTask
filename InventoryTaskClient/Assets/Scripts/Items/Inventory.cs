@@ -41,7 +41,10 @@ public class WeightComponent : InventoryComponent
     public override bool TryApplyChange(Item item, int quantityDelta)
     {
         weightDelta = item.Weight * quantityDelta;
-        return Weight + weightDelta <= MaxWeight;
+        if (Weight + weightDelta <= MaxWeight) return true;
+        Debug.Log("Inventory is too heavy. Take off some heavy items to put more");
+        return false;
+
     }
 
     public override void ApplyDeltas()
