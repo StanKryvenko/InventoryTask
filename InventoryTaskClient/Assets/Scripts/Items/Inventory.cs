@@ -12,8 +12,9 @@ public abstract class InventoryComponent
 {
     public abstract void Initialize(Inventory inventory);
 
-    public abstract void ApplyChange(Item item, int quantityDelta);
-    public abstract void EndChangeSetModification(bool successful);
+    public abstract bool TryApplyChange(Item item, int quantityDelta);
+
+    public abstract void ApplyDeltas();
 }
 
 // tracks the total weight of an inventory
@@ -21,35 +22,31 @@ public class WeightComponent : InventoryComponent
 {
     public int MaxWeight { get; private set; }
     
-    private int weight;
+    public int Weight;
     private int weightDelta;
 
     private Inventory inventory;
-
-    public int Weight => weight + weightDelta;
 
     public WeightComponent(int maxWeight)
     {
         MaxWeight = maxWeight;
     }
 
-    public void SetMaxWeight(int maxWeight) => MaxWeight = maxWeight;
-
     public override void Initialize(Inventory inventory)
     {
-        weight = inventory.Stacks.Sum(stack => (stack.Item?.Weight ?? 0) * stack.Quantity);
+        Weight = inventory.Stacks.Sum(stack => (stack.Item?.Weight ?? 0) * stack.Quantity);
         this.inventory = inventory;
     }
 
-    public override void ApplyChange(Item item, int quantityDelta)
+    public override bool TryApplyChange(Item item, int quantityDelta)
     {
-        weightDelta += item.Weight * quantityDelta;
+        weightDelta = item.Weight * quantityDelta;
+        return Weight + weightDelta <= MaxWeight;
     }
 
-    public override void EndChangeSetModification(bool successful)
+    public override void ApplyDeltas()
     {
-        if (successful && this.weightDelta != 0) this.weight += this.weightDelta;
-        this.weightDelta = 0;
+        Weight += weightDelta;
     }
 }
 #endregion
@@ -96,20 +93,44 @@ public class Inventory
             // If there's no way to stack, find an empty space
             stack = this.Stacks.FirstOrDefault(x => x.Item == null);
             if (stack == null) return -1;
-            stack.Item = item;
-            stack.Quantity++;
-            return IndexOfStack(stack);
         }
+
+        // Check components restrictions and apply temp value if it's ok
+        bool applyResult;
+        foreach (var component in components)
+        {
+            applyResult = component.TryApplyChange(item, 1);
+            if (!applyResult) return -1;
+        }
+
+        // Add new item to stack
+        if (stack.Item == null) stack.Item = item;
         stack.Quantity++;
+        
+        // Apply component temp changes
+        foreach (var component in components) component.ApplyDeltas();
         return IndexOfStack(stack);
     }
 
+    public int GetQuantityInSlot(int slotId)
+    {
+        var stack = GetStack(slotId);
+        if (stack != null) return stack.Quantity;
+        return -1;
+    }
+
+    /// <summary> Try to take item from stack (if it exists) </summary>
     public int TryTakeItem(int stackIndex)
     {
         var stack = GetStack(stackIndex);
         if (stack?.Quantity > 0)
         {
             stack.Quantity--;
+            foreach (var component in components)
+            {
+                component.TryApplyChange(stack.Item, -1);
+                component.ApplyDeltas();
+            }
             if (stack.Quantity == 0) stack.Item = null;
             return stack.Quantity;
         }

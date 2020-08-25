@@ -3,6 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Class which provides needed data for storing item (its weight, id and name)
+/// Ideally ID should be filled from server
+/// </summary>
 public class Item : Stackable, IController
 {
     public int ID { get; set; }
@@ -10,6 +14,9 @@ public class Item : Stackable, IController
     public override string Name { get; set; }
 }
 
+/// <summary>
+/// Describes stacks data for inventory (item info and quantity)
+/// </summary>
 public class ItemStack
 {
     public Item Item { get; set; }

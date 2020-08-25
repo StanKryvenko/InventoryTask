@@ -1,22 +1,25 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
+/// <summary>
+/// Implements interaction for sprites (UI)
+/// </summary>
 public abstract class InteractableSprite : MonoBehaviour, IInteractable, IPointerDownHandler, IPointerUpHandler
 {
-    public virtual InteractResult OnActLeft(InteractionContext context)     => InteractResult.Success;
-    public virtual InteractResult OnActRight(InteractionContext context)    => InteractResult.Success;
-    public virtual InteractResult OnActLeftEnd(InteractionContext context)  => InteractResult.Success;
-    public virtual InteractResult OnActRightEnd(InteractionContext context) => InteractResult.Success;
+    public virtual InteractResult OnActLeft()     => InteractResult.Success;
+    public virtual InteractResult OnActRight()    => InteractResult.Success;
+    public virtual InteractResult OnActLeftEnd()  => InteractResult.Success;
+    public virtual InteractResult OnActRightEnd() => InteractResult.Success;
 
     public void OnPointerDown(PointerEventData eventData)
     {
         switch (eventData.button)
         {
             case PointerEventData.InputButton.Left:
-                OnActLeft(InteractionManager.Obj.CurrentContext);
+                OnActLeft();
                 break;
             case PointerEventData.InputButton.Right:
-                OnActRight(InteractionManager.Obj.CurrentContext);
+                OnActRight();
                 break;
         }
     }
@@ -26,10 +29,10 @@ public abstract class InteractableSprite : MonoBehaviour, IInteractable, IPointe
         switch (eventData.button)
         {
             case PointerEventData.InputButton.Left:
-                OnActLeftEnd(InteractionManager.Obj.CurrentContext);
+                OnActLeftEnd();
                 break;
             case PointerEventData.InputButton.Right:
-                OnActRightEnd(InteractionManager.Obj.CurrentContext);
+                OnActRightEnd();
                 break;
         }
     }

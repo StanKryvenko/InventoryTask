@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.Sprites;
-using UnityEngine;
+﻿using UnityEngine;
 
+/// <summary>
+/// Put this script onto item object to provide drag'n'drop feature
+/// </summary>
 public class DraggableObject : InteractableObject
 {
-    private Vector3 screenPoint;
+    private Vector3 screenPoint = Vector3.zero;
     private Vector3 offset;
 
     private bool isDragging;
@@ -25,15 +24,12 @@ public class DraggableObject : InteractableObject
         }
     }
 
-    protected Vector3 OriginalPosition;
-
-    public override InteractResult OnActLeft(InteractionContext context)
+    public override InteractResult OnActLeft()
     {
         if (!IsDragging && Camera.main != null)
         {
             offset           = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
             IsDragging       = true;
-            OriginalPosition = transform.position;
             var clientItem   = GetComponent<ClientItem>();
             if (clientItem != null) InteractionManager.Obj.TrySelectingItem(clientItem);
         }
@@ -50,7 +46,7 @@ public class DraggableObject : InteractableObject
         }
     }
     
-    public override InteractResult OnActLeftEnd(InteractionContext context)
+    public override InteractResult OnActLeftEnd()
     {
         if (IsDragging) IsDragging = false;
         return InteractResult.Success;

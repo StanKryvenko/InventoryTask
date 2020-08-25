@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+/// <summary>
+/// This class stores item data inside inventory after putting an item into it, the data could be used to recreating an item
+/// </summary>
 [RequireComponent(typeof(Sprite))]
 public class InventoryItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {

@@ -2,14 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// This script provides connection between Item and Unity interface to store specific data for creating items
+/// </summary>
 public class ClientItem : MonoBehaviour
 {
-    public Vector3 LocalScale      { get; private set; }
-    public Vector3 BoxColliderSize { get; private set; }
     public Sprite ItemSprite;
-    public Item Item { get; set; } = new Item();
     public int Weight;
 
+    public Item Item               { get; set; } = new Item();
+    public Vector3 LocalScale      { get; private set; }
+    public Vector3 BoxColliderSize { get; private set; }
+    
     private protected void Start()
     {
         Item.Weight     = Weight;

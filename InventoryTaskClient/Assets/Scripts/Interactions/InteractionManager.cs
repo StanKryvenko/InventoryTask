@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// General manager for storing interaction data
+/// </summary>
 public class InteractionManager : MonoBehaviour
 {
     public static InteractionManager Obj;
-    public InteractionContext CurrentContext;
     
     public ClientItem LastCarriedItem { get; private set; }
     public ClientItem CarriedItem { get; private set; }
