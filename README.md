@@ -1,4 +1,4 @@
-# InventoryTask
+# Inventory System
  
 2D example of inventory system and some RPC server ideas (without implementation server side)
 
