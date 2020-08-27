@@ -193,6 +193,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f589772713e24488b26c2e5e5a07d5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AllowMouseInteraction: 1
+  ResetPositionToOriginal: 1
 --- !u!114 &74758543
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -353,6 +355,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35978af2eec894814bf8a459b7edb5d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  InteractionDistance: 10
+  AllowRaycasting: 0
+  AllowControlsLock: 0
+  HandObject: {fileID: 0}
 --- !u!114 &289013195
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -451,6 +457,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f589772713e24488b26c2e5e5a07d5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AllowMouseInteraction: 1
+  ResetPositionToOriginal: 1
 --- !u!114 &353734887
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -587,6 +595,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f589772713e24488b26c2e5e5a07d5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AllowMouseInteraction: 1
+  ResetPositionToOriginal: 1
 --- !u!114 &524279800
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -879,6 +889,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f589772713e24488b26c2e5e5a07d5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AllowMouseInteraction: 1
+  ResetPositionToOriginal: 1
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -1065,6 +1077,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f589772713e24488b26c2e5e5a07d5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AllowMouseInteraction: 1
+  ResetPositionToOriginal: 1
 --- !u!114 &1395136865
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1201,6 +1215,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f589772713e24488b26c2e5e5a07d5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AllowMouseInteraction: 1
+  ResetPositionToOriginal: 1
 --- !u!114 &1631613716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1337,6 +1353,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f589772713e24488b26c2e5e5a07d5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AllowMouseInteraction: 1
+  ResetPositionToOriginal: 1
 --- !u!114 &1925662579
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1473,6 +1491,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f589772713e24488b26c2e5e5a07d5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AllowMouseInteraction: 1
+  ResetPositionToOriginal: 1
 --- !u!114 &1945252162
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1609,6 +1629,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f589772713e24488b26c2e5e5a07d5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AllowMouseInteraction: 1
+  ResetPositionToOriginal: 1
 --- !u!114 &2014906901
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1876,7 +1898,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2108452609}
   m_Layer: 0
-  m_Name: Game
+  m_Name: GameRoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1922,31 +1944,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2055551411}
     m_Modifications:
-    - target: {fileID: 2574474952696807770, guid: 9c790c8cf153e4653893d7247f281719,
-        type: 3}
-      propertyPath: m_Color.r
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2574474952696807770, guid: 9c790c8cf153e4653893d7247f281719,
-        type: 3}
-      propertyPath: m_Color.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2574474952696807770, guid: 9c790c8cf153e4653893d7247f281719,
-        type: 3}
-      propertyPath: m_Color.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2574474952696807770, guid: 9c790c8cf153e4653893d7247f281719,
-        type: 3}
-      propertyPath: m_Color.a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2809925589983464442, guid: 9c790c8cf153e4653893d7247f281719,
-        type: 3}
-      propertyPath: WeightLimit
-      value: 1000
-      objectReference: {fileID: 0}
     - target: {fileID: 4955561319894344638, guid: 9c790c8cf153e4653893d7247f281719,
         type: 3}
       propertyPath: m_Name
