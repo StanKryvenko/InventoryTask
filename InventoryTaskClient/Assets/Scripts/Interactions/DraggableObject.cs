@@ -5,10 +5,14 @@
 /// </summary>
 public class DraggableObject : InteractableObject
 {
+    public bool ResetPositionToOriginal = true;
     private Vector3 screenPoint = Vector3.zero;
     private Vector3 offset;
 
     private Vector3 originalPosition;
+    private int lastLayer;
+
+    private const string IgnoreLayerName = "Ignore Raycast";
 
     private bool isDragging;
     protected bool IsDragging
@@ -17,11 +21,34 @@ public class DraggableObject : InteractableObject
         set
         {
             isDragging = value;
+            var rb = GetComponent<Rigidbody>();
+            if (rb != null) rb.isKinematic = value;
             var clientItem = GetComponent<ClientItem>();
             if (clientItem != null)
             {
                 if (value) InteractionManager.Obj.TrySelectingItem(clientItem);
                 else       InteractionManager.Obj.RemoveSelectedItem();
+            }
+            if (InteractionManager.Obj.HandObject != null)
+            {
+                if (value)
+                {
+                    transform.SetParent(InteractionManager.Obj.HandObject.transform);
+                    transform.localPosition = Vector3.zero;
+                    lastLayer               = gameObject.layer;
+                    gameObject.layer        = LayerMask.NameToLayer(IgnoreLayerName);
+                }
+                else
+                {
+                    gameObject.layer = lastLayer;
+                    transform.SetParent(null);
+                }
+            }
+            else if (value)
+            {
+                var newPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                newPosition.z   = 0;
+                transform.position = newPosition;
             }
         }
     }
@@ -30,11 +57,9 @@ public class DraggableObject : InteractableObject
     {
         if (!IsDragging && Camera.main != null)
         {
-            offset           = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
             IsDragging       = true;
+            offset           = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
             originalPosition = transform.position;
-            var clientItem   = GetComponent<ClientItem>();
-            if (clientItem != null) InteractionManager.Obj.TrySelectingItem(clientItem);
         }
         return InteractResult.Success;
     }
@@ -43,9 +68,13 @@ public class DraggableObject : InteractableObject
     {
         if (IsDragging)
         {
-            var curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
-            var curPosition    = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
-            transform.position = curPosition;
+            if (InteractionManager.Obj.HandObject == null)
+            {
+                var curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
+                var targetPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
+                transform.position = targetPosition;
+            }
+            if (Input.GetMouseButtonUp(0)) OnActLeftEnd();
         }
     }
     
@@ -57,6 +86,7 @@ public class DraggableObject : InteractableObject
 
     public void ResetPosition()
     {
-        transform.position = originalPosition;
+        if (ResetPositionToOriginal) transform.position = originalPosition;
+        else OnActLeftEnd();
     }
 }

@@ -9,7 +9,7 @@ using UnityEngine.UI;
 /// Also it contains methods for activating itself
 /// </summary>
 [RequireComponent(typeof(ClientInventory))]
-public class Backpack : InteractableSprite
+public class Backpack : InteractableObject
 {
     public GameObject InventoryItemTemplate;
     public GameObject SlotTemplate;
@@ -23,7 +23,7 @@ public class Backpack : InteractableSprite
 
     private bool isBackpackOpened;
     
-    private const float InventoryMagnetDistance = 100f;   // Distance in which it will take an item if it's dropped
+    public float InventoryMagnetDistance = 100f;   // Distance in which it will take an item if it's dropped
 
     private void Start()
     {
@@ -36,40 +36,56 @@ public class Backpack : InteractableSprite
 
     private void Update()
     {
-        // Put an item if an object is dropped near to backpack sprite
-        if (Input.GetMouseButtonUp(0) && Vector2.Distance(Input.mousePosition, transform.position) <= InventoryMagnetDistance)
-            TryToPutItem();
+        DetectItemNearby();
+    }
+
+    /// <summary> Check an item around and if an object is dropped near to backpack sprite </summary>
+    private void DetectItemNearby()
+    {
+        if (Input.GetMouseButtonUp(0))
+        {
+            var carriedItem = InteractionManager.Obj.CarriedItem != null ? InteractionManager.Obj.CarriedItem : InteractionManager.Obj.LastCarriedItem;
+            if (carriedItem)
+            {
+                if (InteractionManager.Obj.AllowRaycasting && InteractionManager.Obj.SelectedObject == gameObject)
+                {
+                    if (Vector3.Distance(carriedItem.transform.position, transform.position) <= InventoryMagnetDistance)
+                        TryToPutItem(carriedItem);
+                }
+                else
+                {
+                    if (Vector2.Distance(Input.mousePosition, transform.position) <= InventoryMagnetDistance)
+                        TryToPutItem(carriedItem);
+                }
+            }
+        }
     }
 
     /// <summary> Tries to put an item to inventory, saves item data in inventory item inside slots, updates quantities </summary>
-    private void TryToPutItem()
+    private void TryToPutItem(ClientItem carriedItem)
     {
-        var carriedItem = InteractionManager.Obj.CarriedItem != null ? InteractionManager.Obj.CarriedItem : InteractionManager.Obj.LastCarriedItem;
-        if (carriedItem)
+        // Put an item into inventory
+        var slotIndex = inventory.Inventory.TryPutItem(carriedItem.Item);
+        if (slotIndex == -1)
         {
-            // Put an item into inventory
-            var slotIndex = inventory.Inventory.TryPutItem(carriedItem.Item);
-            if (slotIndex == -1)
-            {
-                carriedItem.GetComponent<DraggableObject>().ResetPosition();
-                return;
-            }
-            // Save item data in inventory item inside a slot
-            if (slotObjects.Count > slotIndex && slotObjects[slotIndex].slot.transform.childCount == 0)
-            {
-                var inventoryItem = Instantiate(InventoryItemTemplate, slotObjects[slotIndex].slot.transform).GetComponent<InventoryItem>();
-                if (inventoryItem != null)
-                {
-                    itemsList.Add(inventoryItem);
-                    inventoryItem.SetInventoryItem(slotIndex, carriedItem.ItemSprite, carriedItem);
-                }
-            }
-            // Update quantity info
-            var quantityLeft = inventory.Inventory.GetQuantityInSlot(slotIndex);
-            if (quantityLeft != -1) slotObjects[slotIndex].quantity.text = quantityLeft.ToString();
-            inventory.PutItemEvent?.Invoke(carriedItem);
-            Destroy(carriedItem.gameObject);
+            carriedItem.GetComponent<DraggableObject>().ResetPosition();
+            return;
         }
+        // Save item data in inventory item inside a slot
+        if (slotObjects.Count > slotIndex && slotObjects[slotIndex].slot.transform.childCount == 0)
+        {
+            var inventoryItem = Instantiate(InventoryItemTemplate, slotObjects[slotIndex].slot.transform).GetComponent<InventoryItem>();
+            if (inventoryItem != null)
+            {
+                itemsList.Add(inventoryItem);
+                inventoryItem.SetInventoryItem(slotIndex, carriedItem.ItemSprite, carriedItem);
+            }
+        }
+        // Update quantity info
+        var quantityLeft = inventory.Inventory.GetQuantityInSlot(slotIndex);
+        if (quantityLeft != -1) slotObjects[slotIndex].quantity.text = quantityLeft.ToString();
+        inventory.PutItemEvent?.Invoke(carriedItem);
+        Destroy(carriedItem.gameObject);
     }
 
     /// <summary> Tries taking item from inventory with holding object with mouse and updating quantity info </summary>
@@ -82,14 +98,12 @@ public class Backpack : InteractableSprite
             var quantityLeft = inventory.Inventory.TryTakeItem(selectedItem.SlotID);
             if (quantityLeft == -1) return;
             if (quantityLeft == 0) Destroy(selectedItem.gameObject);
-            var itemObject  = ItemsController.Obj.CreateItemObject(selectedItem.Item);
-            var newPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            newPosition.z   = 0;
-            itemObject.transform.position = newPosition;
+            var itemObject      = selectedItem.Item.CreateNewItem();
             
             slotObjects[selectedItem.SlotID].quantity.text = quantityLeft.ToString();
             // Force act for taking object
-            itemObject.GetComponent<DraggableObject>()?.OnActLeft();
+            var draggableObject = itemObject.GetComponent<DraggableObject>();
+            if (draggableObject != null) draggableObject.OnActLeft();
             inventory.TakeItemEvent?.Invoke(selectedItem.Item);
         }
     }
@@ -110,6 +124,7 @@ public class Backpack : InteractableSprite
         // Show backpack UI
         isBackpackOpened = true;
         backpackUI.SetActive(true);
+        InteractionManager.Obj.IsLockedControls = true;
         return InteractResult.Success;
     }
     
@@ -122,6 +137,7 @@ public class Backpack : InteractableSprite
             backpackUI.SetActive(false);
             TryToTakeItem();
             foreach (var item in itemsList) item.IsSelected = false;
+            InteractionManager.Obj.IsLockedControls = false;
             return InteractResult.Success;
         }
         return InteractResult.Fail;
