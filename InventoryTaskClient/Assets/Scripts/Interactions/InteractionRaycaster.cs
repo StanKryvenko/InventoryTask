@@ -14,6 +14,7 @@ public class InteractionRaycaster : MonoBehaviour
                 var interactable = hit.collider.gameObject.GetComponent<IInteractable>();
                 InteractionManager.Obj.SelectedObject = interactable != null ? hit.collider.gameObject : null;
             }
+            else InteractionManager.Obj.SelectedObject = null;
         }
     }
 }

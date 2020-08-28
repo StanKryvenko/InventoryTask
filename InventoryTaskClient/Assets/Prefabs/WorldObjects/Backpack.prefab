@@ -40,14 +40,14 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 402380515216005263}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 5
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!1 &3595674287048296243
 GameObject:
   m_ObjectHideFlags: 0
@@ -59,9 +59,9 @@ GameObject:
   - component: {fileID: 3887911912434675694}
   - component: {fileID: 2380745921997363045}
   - component: {fileID: 7295842181772310521}
-  - component: {fileID: 4085474688551412554}
   - component: {fileID: 4199700652233329721}
   - component: {fileID: 2554071898132107428}
+  - component: {fileID: 6040624612033916810}
   m_Layer: 0
   m_Name: BackpackObject
   m_TagString: Untagged
@@ -130,19 +130,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!65 &4085474688551412554
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3595674287048296243}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1.69204, y: 0.9712906, z: 2.4922724}
-  m_Center: {x: -0.009709954, y: -0.30335116, z: 1.2587161}
 --- !u!114 &4199700652233329721
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -156,7 +143,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   WeightLimit: 1000
-  NumBackpackSlots: 5
+  NumBackpackSlots: 9
 --- !u!114 &2554071898132107428
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -169,10 +156,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92ecb07ed12894189b259aa9054d9e45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AllowMouseInteraction: 0
   InventoryItemTemplate: {fileID: 1614823353792168257, guid: 162a5a55c6e8c4d4e81ec9a51442908a,
     type: 3}
   SlotTemplate: {fileID: 2046240048077809601, guid: efee7fdf0417e4371bc3abfff0007f7e,
     type: 3}
-  BackpackUITemplate: {fileID: 2162813757300836237, guid: 39f18a6a52b0d42a1b7b29de83e0dbf3,
+  BackpackUITemplate: {fileID: 333806253020831032, guid: f97b89648d51a48dca9d68f2cef461b5,
     type: 3}
   InventoryMagnetDistance: 5
+--- !u!65 &6040624612033916810
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3595674287048296243}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.6920409, y: 0.93, z: 2.24}
+  m_Center: {x: -0.009710004, y: -0.23, z: 1.2983553}
