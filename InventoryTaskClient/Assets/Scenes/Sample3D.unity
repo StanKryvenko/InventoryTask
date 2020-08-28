@@ -808,6 +808,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Backpack
       objectReference: {fileID: 0}
+    - target: {fileID: 672411987035039196, guid: b1639252f066d470e85a672cf486f611,
+        type: 3}
+      propertyPath: m_Mass
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 1071393124410802741, guid: b1639252f066d470e85a672cf486f611,
         type: 3}
       propertyPath: m_LocalPosition.x
